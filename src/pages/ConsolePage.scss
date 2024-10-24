@@ -51,6 +51,7 @@
         padding-top: 16px;
         padding-bottom: 4px;
         position: relative;
+        border-top: 1px solid #e7e7e7;
       }
       .content-block-body {
         color: #6e6e7f;
@@ -130,9 +131,9 @@
       & > div.events {
         overflow: hidden;
       }
-      .events {
-        border-top: 1px solid #e7e7e7;
-      }
+      // .events {
+      //   border-top: 1px solid #e7e7e7;
+      // }
       .conversation {
         display: flex;
         flex-shrink: 0;
