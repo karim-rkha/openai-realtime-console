@@ -531,7 +531,6 @@ export function ConsolePage() {
     <div data-component="ConsolePage">
       <div className="content-top">
         <div className="content-title">
-          {/* <img src="/openai-logomark.svg" /> */}
           <span className="logo-text">&lt;...&gt;</span>
           <span>a talking production</span>
         </div>
