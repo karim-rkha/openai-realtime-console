@@ -280,3 +280,24 @@
     }
   }
 }
+
+// .logo-text {
+//   font-size: 14px; /* Adjust size if needed */
+//   letter-spacing: 0.1em; /* Adjust spacing of brackets */
+// }
+
+// .dots {
+//   position: relative;
+//   top: -3px; /* Move dots higher */
+//   // letter-spacing: -0.3em; /* Reduce space between the dots */
+// }
+
+.dots {
+  position: relative;
+  top: -3px; /* Move dots higher */
+  letter-spacing: -0.3em; /* Reduce space between the dots */
+  display: inline-block; /* Allows margin adjustments */
+  // margin-left: 0.15em; /* Adjust left margin */
+  margin-right: 0.25em; /* Adjust right margin */
+}
+
