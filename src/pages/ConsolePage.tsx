@@ -254,20 +254,44 @@ export function ConsolePage() {
   /**
    * Switch between Manual <> VAD mode for communication
    */
-  const changeTurnEndType = async (value: string) => {
+  // const changeTurnEndType = async (value: string) => {
+  //   const client = clientRef.current;
+  //   const wavRecorder = wavRecorderRef.current;
+  //   if (value === 'none' && wavRecorder.getStatus() === 'recording') {
+  //     await wavRecorder.pause();
+  //   }
+  //   client.updateSession({
+  //     turn_detection: value === 'none' ? null : { type: 'server_vad' },
+  //   });
+  //   if (value === 'server_vad' && client.isConnected()) {
+  //     await wavRecorder.record((data) => client.appendInputAudio(data.mono));
+  //   }
+  //   setCanPushToTalk(value === 'none');
+  // };
+
+  const changeTurnEndType = async () => {
     const client = clientRef.current;
     const wavRecorder = wavRecorderRef.current;
-    if (value === 'none' && wavRecorder.getStatus() === 'recording') {
-      await wavRecorder.pause();
-    }
+  
+    // Set turn detection to 'server_vad' automatically
     client.updateSession({
-      turn_detection: value === 'none' ? null : { type: 'server_vad' },
+      turn_detection: { type: 'server_vad' },
     });
-    if (value === 'server_vad' && client.isConnected()) {
+  
+    // Start recording if client is connected
+    if (client.isConnected()) {
       await wavRecorder.record((data) => client.appendInputAudio(data.mono));
     }
-    setCanPushToTalk(value === 'none');
+  
+    // Set push-to-talk availability based on the turn detection type
+    setCanPushToTalk(false);  // Always set to false since we only use VAD
   };
+  
+  // You can now call changeTurnEndType() where needed in your component lifecycle
+  useEffect(() => {
+    changeTurnEndType(); // Automatically switch to VAD when the component mounts
+  }, []);
+  
 
   /**
    * Auto-scroll the event logs
@@ -534,7 +558,7 @@ export function ConsolePage() {
                 <canvas ref={serverCanvasRef} />
               </div>
             </div>
-            <div className="content-block-title">event</div>
+            <div className="content-block-title"></div>
             <div className="content-block events">
               <div className="visualization">
                 <div className="visualization-entry client">
@@ -549,7 +573,7 @@ export function ConsolePage() {
           <div className="content-block conversation">
             <div className="content-block-title">conversation</div>
             <div className="content-block-body" data-conversation-content>
-              {!items.length && `awaiting connection...`}
+              {!items.length && `click on talk button...`}
               {items.map((conversationItem, i) => {
                 return (
                   <div className="conversation-item" key={conversationItem.id}>
@@ -611,13 +635,13 @@ export function ConsolePage() {
             </div>
           </div>
           <div className="content-actions">
-            <Toggle
-              defaultValue={false}
-              labels={['manual', 'vad']}
-              values={['none', 'server_vad']}
-              onChange={(_, value) => changeTurnEndType(value)}
-            />
-            <div className="spacer" />
+          {/* <Toggle
+            defaultValue={'server_vad'}  // Set this to 'server_vad' for default "vad"
+            labels={['manual', 'vad']}
+            values={['none', 'server_vad']}
+            onChange={(_, value) => changeTurnEndType(value)}
+          /> */}
+          <div className="spacer" />
             {isConnected && canPushToTalk && (
               <Button
                 label={isRecording ? 'release to send' : 'push to talk'}
@@ -629,7 +653,7 @@ export function ConsolePage() {
             )}
             <div className="spacer" />
             <Button
-              label={isConnected ? 'disconnect' : 'connect'}
+              label={isConnected ? 'stop' : 'talk'}
               iconPosition={isConnected ? 'end' : 'start'}
               icon={isConnected ? X : Zap}
               buttonStyle={isConnected ? 'regular' : 'action'}
@@ -667,13 +691,15 @@ export function ConsolePage() {
             </div>
           </div> */}
           <div className="content-block map">
-          <img src="https://i.pinimg.com/control/564x/b4/de/14/b4de142ecd12c0fcfa7e122849036fa4.jpg" alt="Pinterest Image" />
+          {/* <img src="https://i.pinimg.com/control/564x/b4/de/14/b4de142ecd12c0fcfa7e122849036fa4.jpg" alt="Pinterest Image" /> */}
+          {/* <img src="https://i.pinimg.com/564x/f0/22/f2/f022f22735d8dd0525459e9f74018909.jpg" alt="Pinterest Image" /> */}
+          <img src="https://i.pinimg.com/564x/b5/b0/87/b5b08770e0cf1303235304c1487295ad.jpg" alt="Pinterest Image" />
           </div>
-          <div className="content-block kv">
-            <div className="content-block-title">set_memory()</div>
-            <div className="content-block-body content-kv">
+          <div>
+            {/* <div className="content-block-title">set_memory()</div> */}
+            {/* <div className="content-block-body content-kv">
               {JSON.stringify(memoryKv, null, 2)}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
