@@ -625,6 +625,7 @@ export function ConsolePage() {
                       {conversationItem.formatted.file && (
                         <audio
                           src={conversationItem.formatted.file.url}
+                          style={{ display: 'none' }}  // Hide the audio element
                           controls
                         />
                       )}
