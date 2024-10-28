@@ -510,29 +510,29 @@ export function ConsolePage() {
         await client.cancelResponse(trackId, offset);
       }
     });
+    let currentUserInput = "";
+    let currentAIResponse = "";
     client.on('conversation.updated', async ({ item, delta }: any) => {
       const items = client.conversation.getItems();
-
-      // Initialize userInput and aiResponse as undefined to check if they are set
-      let userInput, aiResponse;
-
+    
+      // Update user input or AI response based on item role
       if (item.role === 'user' && (item.formatted?.transcript || item.formatted?.text)) {
-        // Extract user input
-        userInput = item.formatted?.transcript || item.formatted?.text;
-        console.log("User Input:", userInput);
+        // Capture user input
+        currentUserInput = item.formatted?.transcript || item.formatted?.text;
+        console.log("User Input:", currentUserInput);
+      } else if (item.role === 'assistant' && (item.formatted?.transcript || item.formatted?.text || delta?.audio)) {
+        // Accumulate AI response until it's complete
+        currentAIResponse += item.formatted?.transcript || item.formatted?.text || (delta?.audio ? "(Audio response)" : "");
+        console.log("AI Response:", currentAIResponse);
       }
-
-      if (item.role === 'assistant' && (item.formatted?.transcript || item.formatted?.text)) {
-        // Extract assistant response
-        aiResponse = item.formatted?.transcript || item.formatted?.text;
-        console.log("AI Response:", aiResponse);
-      } else if (delta?.audio && item.role === 'assistant') {
-        aiResponse = "(Audio response)";
-      }
-
-      // Log conversation only if there’s actual user input and AI response
-      if (userInput || aiResponse) {
-        logConversation(userInput || "(No user input)", aiResponse || "(No AI response)");
+    
+      // Log only when both user input and AI response are set
+      if (currentUserInput && currentAIResponse) {
+        logConversation(currentUserInput, currentAIResponse);
+    
+        // Clear the temporary variables for the next interaction
+        currentUserInput = "";
+        currentAIResponse = "";
       }
 
 
