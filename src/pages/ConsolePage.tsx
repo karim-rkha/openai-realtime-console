@@ -538,14 +538,14 @@ export function ConsolePage() {
           <span>a talking production</span>
         </div>
         <div className="content-api-key">
-        <Button
-          icon={Edit}
-          iconPosition="end"
-          buttonStyle="flush"
-          label="give feedback"
-          onClick={() => window.location.href='https://honorable-hamster-bbc.notion.site/12d196ae1a1f80e4bc77fa8479fd3304?pvs=105'}
-        />
-      </div>
+          <Button
+            icon={Edit}
+            iconPosition="end"
+            buttonStyle="flush"
+            label="give feedback"
+            onClick={() => window.open('https://honorable-hamster-bbc.notion.site/12d196ae1a1f80e4bc77fa8479fd3304?pvs=105', '_blank', 'noopener,noreferrer')}
+          />
+        </div>
       </div>
       <div className="content-main">
         <div className="content-logs">
