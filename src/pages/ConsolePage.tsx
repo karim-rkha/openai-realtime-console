@@ -520,7 +520,7 @@ export function ConsolePage() {
       // Capture and log user input only once
       if (item.role === 'user' && (item.formatted?.transcript || item.formatted?.text) && !isUserTurn) {
         currentUserInput = item.formatted?.transcript || item.formatted?.text;
-        console.log("User Input:", currentUserInput);
+        logConversation(currentUserInput, currentAIResponse);
         isUserTurn = true; // Mark that we’ve processed this user input
       }
     
@@ -531,6 +531,8 @@ export function ConsolePage() {
     
       // Log the conversation only when the assistant's response is complete
       if (item.role === 'assistant' && item.status === 'completed') {
+        console.log("currentUserInput: ",currentUserInput);
+        console.log("currentAIResponse: ",currentAIResponse);
         logConversation(currentUserInput, currentAIResponse);
     
         // Reset after logging
