@@ -27,6 +27,7 @@ import { Map } from '../components/Map';
 import './ConsolePage.scss';
 import { isJsxOpeningLikeElement } from 'typescript';
 
+
 /**
  * Type for result from get_weather() function call
  */
@@ -157,6 +158,15 @@ export function ConsolePage() {
       window.location.reload();
     }
   }, []);
+
+  async function logConversation(userInput: string, aiResponse: string) {
+    await fetch('/api/logUserInteraction', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userInput, aiResponse }),
+    });
+  }  
+  
 
   /**
    * Connect to conversation:
@@ -502,6 +512,13 @@ export function ConsolePage() {
     });
     client.on('conversation.updated', async ({ item, delta }: any) => {
       const items = client.conversation.getItems();
+        // Get user input and AI response from the item
+      const userInput = item.formatted?.text || "(No user input)";
+      const aiResponse = delta?.audio ? "(Audio response)" : item.formatted?.text || "(No AI response)";
+      
+      // Log the conversation
+      logConversation(userInput, aiResponse);
+      
       if (delta?.audio) {
         wavStreamPlayer.add16BitPCM(delta.audio, item.id);
       }
