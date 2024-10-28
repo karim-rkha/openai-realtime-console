@@ -512,13 +512,28 @@ export function ConsolePage() {
     });
     client.on('conversation.updated', async ({ item, delta }: any) => {
       const items = client.conversation.getItems();
-        // Get user input and AI response from the item
-      const userInput = item.formatted?.text || "(No user input)";
-      const aiResponse = delta?.audio ? "(Audio response)" : item.formatted?.text || "(No AI response)";
-      
+
+      // Extract user input and AI response more accurately
+      let userInput, aiResponse;
+
+      if (item.role === 'user') {
+        userInput = item.formatted?.transcript ||
+                    (item.formatted?.audio?.length ? '(awaiting transcript)' : item.formatted?.text || "(No user input)");
+      } else {
+        userInput = "(No user input)";
+      }
+
+      if (item.role === 'assistant') {
+        aiResponse = item.formatted?.transcript || item.formatted?.text || "(No AI response)";
+      } else if (delta?.audio) {
+        aiResponse = "(Audio response)";
+      } else {
+        aiResponse = "(No AI response)";
+      }
+
       // Log the conversation
       logConversation(userInput, aiResponse);
-      
+
       if (delta?.audio) {
         wavStreamPlayer.add16BitPCM(delta.audio, item.id);
       }
