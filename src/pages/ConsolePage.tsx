@@ -512,30 +512,32 @@ export function ConsolePage() {
     });
     let currentUserInput = "";
     let currentAIResponse = "";
+    let isUserTurn = false; // Tracks if it's the user's turn
     
     client.on('conversation.updated', async ({ item, delta }: any) => {
       const items = client.conversation.getItems();
     
-      // Capture user input
-      if (item.role === 'user' && (item.formatted?.transcript || item.formatted?.text)) {
+      // Capture and log user input only once
+      if (item.role === 'user' && (item.formatted?.transcript || item.formatted?.text) && !isUserTurn) {
         currentUserInput = item.formatted?.transcript || item.formatted?.text;
         console.log("User Input:", currentUserInput);
+        isUserTurn = true; // Mark that we’ve processed this user input
       }
     
-      // Accumulate AI response
+      // Accumulate AI response incrementally
       if (item.role === 'assistant' && (item.formatted?.transcript || item.formatted?.text || delta?.audio)) {
-        currentAIResponse += item.formatted?.transcript || item.formatted?.text || (delta?.audio ? "(Audio response)" : "");
-        console.log("AI Response (in progress):", currentAIResponse);
+        currentAIResponse = item.formatted?.transcript || item.formatted?.text || currentAIResponse;
       }
     
-      // Log only when the assistant's response is complete
+      // Log the conversation only when the assistant's response is complete
       if (item.role === 'assistant' && item.status === 'completed') {
         logConversation(currentUserInput, currentAIResponse);
     
-        // Reset both input and response after logging
+        // Reset after logging
         currentUserInput = "";
         currentAIResponse = "";
-      }    
+        isUserTurn = false; // Reset for next user input
+      }
 
 
       if (delta?.audio) {
