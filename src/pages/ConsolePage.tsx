@@ -513,33 +513,28 @@ export function ConsolePage() {
     client.on('conversation.updated', async ({ item, delta }: any) => {
       const items = client.conversation.getItems();
 
-      // Extract user input and AI response more accurately
+      // Initialize userInput and aiResponse as undefined to check if they are set
       let userInput, aiResponse;
 
-      if (item.role === 'user') {
-        // userInput = item.formatted?.transcript ||
-        //             (item.formatted?.audio?.length ? '(awaiting transcript)' : item.formatted?.text || "(No user input)");
-        userInput = item.formatted?.transcript || item.formatted?.text || "(No user input)";
-        console.log(userInput)
-      } else {
-        userInput = "(No user input)";
+      if (item.role === 'user' && (item.formatted?.transcript || item.formatted?.text)) {
+        // Extract user input
+        userInput = item.formatted?.transcript || item.formatted?.text;
+        console.log("User Input:", userInput);
       }
 
-      if (item.role === 'assistant') {
-        aiResponse = item.formatted?.transcript || item.formatted?.text || "(No AI response)";
-        console.log(aiResponse)
-      } else if (delta?.audio) {
+      if (item.role === 'assistant' && (item.formatted?.transcript || item.formatted?.text)) {
+        // Extract assistant response
+        aiResponse = item.formatted?.transcript || item.formatted?.text;
+        console.log("AI Response:", aiResponse);
+      } else if (delta?.audio && item.role === 'assistant') {
         aiResponse = "(Audio response)";
-      } else {
-        aiResponse = "(No AI response)";
       }
 
-      // Log the conversation
-      // if (item.role != 'assistant') {
-      //   console.log(item);
-      // }
-      // console.log(aiResponse);
-      logConversation(userInput, aiResponse);
+      // Log conversation only if there’s actual user input and AI response
+      if (userInput || aiResponse) {
+        logConversation(userInput || "(No user input)", aiResponse || "(No AI response)");
+      }
+
 
       if (delta?.audio) {
         wavStreamPlayer.add16BitPCM(delta.audio, item.id);
