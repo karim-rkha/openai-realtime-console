@@ -517,14 +517,17 @@ export function ConsolePage() {
       let userInput, aiResponse;
 
       if (item.role === 'user') {
-        userInput = item.formatted?.transcript ||
-                    (item.formatted?.audio?.length ? '(awaiting transcript)' : item.formatted?.text || "(No user input)");
+        // userInput = item.formatted?.transcript ||
+        //             (item.formatted?.audio?.length ? '(awaiting transcript)' : item.formatted?.text || "(No user input)");
+        userInput = item.formatted?.transcript || item.formatted?.text || "(No user input)";
+        console.log(userInput)
       } else {
         userInput = "(No user input)";
       }
 
       if (item.role === 'assistant') {
         aiResponse = item.formatted?.transcript || item.formatted?.text || "(No AI response)";
+        console.log(aiResponse)
       } else if (delta?.audio) {
         aiResponse = "(Audio response)";
       } else {
@@ -532,6 +535,10 @@ export function ConsolePage() {
       }
 
       // Log the conversation
+      // if (item.role != 'assistant') {
+      //   console.log(item);
+      // }
+      // console.log(aiResponse);
       logConversation(userInput, aiResponse);
 
       if (delta?.audio) {
