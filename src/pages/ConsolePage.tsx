@@ -512,28 +512,30 @@ export function ConsolePage() {
     });
     let currentUserInput = "";
     let currentAIResponse = "";
+    
     client.on('conversation.updated', async ({ item, delta }: any) => {
       const items = client.conversation.getItems();
     
-      // Update user input or AI response based on item role
+      // Capture user input
       if (item.role === 'user' && (item.formatted?.transcript || item.formatted?.text)) {
-        // Capture user input
         currentUserInput = item.formatted?.transcript || item.formatted?.text;
         console.log("User Input:", currentUserInput);
-      } else if (item.role === 'assistant' && (item.formatted?.transcript || item.formatted?.text || delta?.audio)) {
-        // Accumulate AI response until it's complete
-        currentAIResponse += item.formatted?.transcript || item.formatted?.text || (delta?.audio ? "(Audio response)" : "");
-        console.log("AI Response:", currentAIResponse);
       }
     
-      // Log only when both user input and AI response are set
-      if (currentUserInput && currentAIResponse) {
+      // Accumulate AI response
+      if (item.role === 'assistant' && (item.formatted?.transcript || item.formatted?.text || delta?.audio)) {
+        currentAIResponse += item.formatted?.transcript || item.formatted?.text || (delta?.audio ? "(Audio response)" : "");
+        console.log("AI Response (in progress):", currentAIResponse);
+      }
+    
+      // Log only when the assistant's response is complete
+      if (item.role === 'assistant' && item.status === 'completed') {
         logConversation(currentUserInput, currentAIResponse);
     
-        // Clear the temporary variables for the next interaction
+        // Reset both input and response after logging
         currentUserInput = "";
         currentAIResponse = "";
-      }
+      }    
 
 
       if (delta?.audio) {
