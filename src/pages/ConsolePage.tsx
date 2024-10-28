@@ -538,16 +538,14 @@ export function ConsolePage() {
           <span>a talking production</span>
         </div>
         <div className="content-api-key">
-          {!LOCAL_RELAY_SERVER_URL && (
-            <Button
-              icon={Edit}
-              iconPosition="end"
-              buttonStyle="flush"
-              label={`api key: ${apiKey.slice(0, 3)}...`}
-              onClick={() => resetAPIKey()}
-            />
-          )}
-        </div>
+        <Button
+          icon={Edit}
+          iconPosition="end"
+          buttonStyle="flush"
+          label="Give feedback"
+          onClick={() => window.location.href='https://honorable-hamster-bbc.notion.site/12d196ae1a1f80e4bc77fa8479fd3304?pvs=105'}
+        />
+      </div>
       </div>
       <div className="content-main">
         <div className="content-logs">
