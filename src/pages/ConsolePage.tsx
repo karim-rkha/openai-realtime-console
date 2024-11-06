@@ -519,6 +519,7 @@ export function ConsolePage() {
     
       // Capture and log user input only once
       if (item.role === 'user' && (item.formatted?.transcript || item.formatted?.text) && !isUserTurn) {
+        console.log(item);
         currentUserInput = item.formatted?.transcript || item.formatted?.text;
         logConversation(currentUserInput, currentAIResponse);
         isUserTurn = true; // Mark that we’ve processed this user input
